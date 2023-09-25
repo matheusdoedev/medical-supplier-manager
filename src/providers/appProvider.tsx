@@ -2,26 +2,30 @@ import { FC, ReactNode } from 'react'
 import { QueryClientProvider } from 'react-query'
 import { ThemeProvider } from 'styled-components'
 
+import { Toast } from '@/components'
+import { AuthProvider } from '@/contexts'
 import { queryProvider } from '@/providers'
 
 import { Reset, theme } from '@/styles'
 
-interface RenderWithClientProps {
+import 'react-toastify/dist/ReactToastify.css'
+
+interface AppProviderProps {
   children: ReactNode
 }
 
-const TestProvider: FC<RenderWithClientProps> = ({ children }) => {
+export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   return (
-    <div>
+    <div data-testid="app">
       <ThemeProvider theme={theme}>
         <Reset />
 
         <QueryClientProvider client={queryProvider}>
-          {children}
+          <AuthProvider>
+            {children} <Toast />
+          </AuthProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </div>
   )
 }
-
-export default TestProvider
