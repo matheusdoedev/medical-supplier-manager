@@ -1,17 +1,29 @@
-import { ButtonHTMLAttributes, FC } from 'react'
+import { ButtonHTMLAttributes, FC, useMemo } from 'react'
 import { styled } from 'styled-components'
 
+import { Loader } from '@/components'
 import { CommonComponentWithChildren } from '@/interfaces'
+
 import { theme } from '@/styles'
 
 interface ButtonProps
   extends CommonComponentWithChildren,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {}
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+  isLoading?: boolean
+}
 
-const ButtonComponent: FC<ButtonProps> = ({ children, ...props }) => {
+const ButtonComponent: FC<ButtonProps> = ({
+  children,
+  isLoading = false,
+  ...props
+}) => {
+  const handleButtonContent = useMemo(() => {
+    return isLoading ? <Loader isLoading={isLoading} /> : children
+  }, [children, isLoading])
+
   return (
     <Button data-testid="button" {...props}>
-      {children}
+      {handleButtonContent}
     </Button>
   )
 }
@@ -39,6 +51,7 @@ const Button = styled.button`
 
   @media (min-width: ${theme.breakpoints.sm}) {
     font-size: 16px;
+    padding: 11.5px 16px;
   }
 `
 
