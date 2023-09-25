@@ -1,4 +1,4 @@
 export const fonts = {
-  primary: "'Bebas Neue', sans-serif",
-  secondary: 'Roboto, Arial, Helvetica, sans-serif',
+  primary: "'Rubik', 'Nunito' Arial, Helvetica, sans-serif",
+  secondary: "'Nunito', Arial, Helvetica, sans-serif",
 }
