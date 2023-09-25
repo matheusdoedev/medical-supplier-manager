@@ -5,7 +5,7 @@ import {
   useEffect,
   HTMLInputTypeAttribute,
 } from 'react'
-import { CSSProperties, styled } from 'styled-components'
+import { CSSProperties, css, styled } from 'styled-components'
 
 import { theme } from '@/styles'
 
@@ -14,8 +14,10 @@ interface TextFieldProps {
   label?: string
   name: string
   placeholder?: string
-  onChange?: (value: string | number) => void
+  value: string | number
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void
   containerStyle?: CSSProperties
+  error?: string
 }
 
 type InputOnFocusActions = 'on' | 'off'
@@ -25,19 +27,19 @@ const TextField: FC<TextFieldProps> = ({
   type = 'text',
   label,
   onChange,
+  value,
   containerStyle,
+  error,
   ...props
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const inputWrapperRef = useRef<HTMLDivElement>(null)
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (!onChange) return
-    onChange(event.target.value)
-  }
-
   const handleLabel = () =>
     label && <TextFieldLabel htmlFor={name}>{label}</TextFieldLabel>
+
+  const handleErrorText = () =>
+    error && <TextFieldError>{error}</TextFieldError>
 
   useEffect(() => {
     if (!inputRef.current || !inputWrapperRef.current) return
@@ -56,13 +58,17 @@ const TextField: FC<TextFieldProps> = ({
 
   return (
     <TextFieldWrapper data-testid="text-field" style={containerStyle}>
-      {handleLabel()}
-      <TextFieldInputWrapper ref={inputWrapperRef}>
+      <TextFieldHead>
+        {handleLabel()}
+        {handleErrorText()}
+      </TextFieldHead>
+      <TextFieldInputWrapper error={!!error} ref={inputWrapperRef}>
         <TextFieldInput
           type={type}
           id={name}
           name={name}
-          onChange={handleChange}
+          value={value}
+          onChange={onChange}
           ref={inputRef}
           {...props}
         />
@@ -79,6 +85,21 @@ const TextFieldWrapper = styled.div`
   max-width: 350px;
 `
 
+const TextFieldHead = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  column-gap: 16px;
+  align-items: center;
+`
+
+const TextFieldError = styled.span`
+  justify-self: end;
+  color: ${({ theme }) => theme.colors.warning};
+  font-family: ${({ theme }) => theme.fonts.secondary};
+  font-size: 10px;
+  line-height: 1.1em;
+`
+
 const TextFieldLabel = styled.label`
   color: ${({ theme }) => theme.colors.quaternary['400']};
   font-family: ${({ theme }) => theme.fonts.secondary};
@@ -90,7 +111,7 @@ const TextFieldLabel = styled.label`
   }
 `
 
-const TextFieldInputWrapper = styled.div`
+const TextFieldInputWrapper = styled.div<{ error?: boolean }>`
   width: 100%;
   padding: 1px 1px;
   border-radius: 4px;
@@ -100,6 +121,12 @@ const TextFieldInputWrapper = styled.div`
   &.focus {
     border-color: ${({ theme }) => theme.colors.primary['400']};
   }
+
+  ${({ error }) =>
+    error &&
+    css`
+      border-color: ${({ theme }) => theme.colors.warning};
+    `}
 `
 
 const TextFieldInput = styled.input`
