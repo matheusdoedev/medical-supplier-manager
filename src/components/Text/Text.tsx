@@ -1,28 +1,10 @@
-import { FC, ReactNode } from 'react'
-import { CSSProperties, styled, WebTarget } from 'styled-components'
+import { FC } from 'react'
+import { styled } from 'styled-components'
+
+import { TEXT_VARIANTS } from '@/constants'
+import { TextComponentProps, TextProps } from '@/interfaces'
 
 import { theme } from '@/styles'
-
-const TEXT_VARIANTS = {
-  small: { fontSize: 12 },
-  default: { fontSize: 14 },
-  medium: { fontSize: 16 },
-  big: { fontSize: 18 },
-}
-
-interface TextComponentProps {
-  as?: WebTarget
-  variant?: 'small' | 'default' | 'medium' | 'big'
-  children: ReactNode
-  color?: string
-  containerStyle?: CSSProperties
-  className?: string
-}
-
-interface TextProps {
-  fontSize: number
-  color: string
-}
 
 const TextComponent: FC<TextComponentProps> = ({
   as,

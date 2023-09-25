@@ -14,6 +14,7 @@ interface ButtonProps
 
 const ButtonComponent: FC<ButtonProps> = ({
   children,
+  containerStyle,
   isLoading = false,
   ...props
 }) => {
@@ -22,13 +23,17 @@ const ButtonComponent: FC<ButtonProps> = ({
   }, [children, isLoading])
 
   return (
-    <Button data-testid="button" {...props}>
+    <Button data-testid="button" style={containerStyle} {...props}>
       {handleButtonContent}
     </Button>
   )
 }
 
 const Button = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   border: none;
   color: ${({ theme }) => theme.colors.terciary['400']};
   text-align: center;
