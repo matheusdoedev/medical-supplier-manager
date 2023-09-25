@@ -1,15 +1,23 @@
 import { render, screen } from '@testing-library/react'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+
+import { AppProvider } from '@/providers'
 
 import Login from '.'
 
-import { TestProvider } from '@/__tests__'
+export const MOCK_ROUTER = createBrowserRouter([
+  {
+    path: '/',
+    element: (
+      <AppProvider>
+        <Login />
+      </AppProvider>
+    ),
+  },
+])
 
 const renderComponent = () => {
-  render(
-    <TestProvider>
-      <Login />
-    </TestProvider>,
-  )
+  render(<RouterProvider router={MOCK_ROUTER} />)
 }
 
 describe('Login view', () => {

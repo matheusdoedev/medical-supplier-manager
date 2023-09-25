@@ -1,11 +1,27 @@
 import { styled } from 'styled-components'
+import { toast } from 'react-toastify'
 
 import { LoginBgImg } from '@/assets'
 import { Button, Logo, Text, TextField } from '@/components'
+import { useAuth } from '@/contexts'
+import { useQueryParams } from '@/hooks'
 
 import { theme } from '@/styles'
+import { useEffect } from 'react'
 
 const Login = () => {
+  const { values, handleChange, handleSubmit, isLogging, errors } = useAuth()
+
+  const { username, password } = values
+
+  const isSessionExpired = useQueryParams().get('sessionExpired')
+
+  useEffect(() => {
+    if (isSessionExpired) {
+      toast.warning('Session expired. You must sign in to continue.')
+    }
+  }, [isSessionExpired])
+
   return (
     <LoginWrapper data-testid="login-view">
       <LoginContainer>
@@ -20,20 +36,30 @@ const Login = () => {
         <Text className="login-description" variant="big">
           Sign in with your credentials
         </Text>
-        <TextField
-          name="username"
-          label="Username"
-          placeholder="Enter your username"
-          containerStyle={{ marginBottom: 16 }}
-        />
-        <TextField
-          type="password"
-          name="password"
-          label="Password"
-          placeholder="Enter your password"
-          containerStyle={{ marginBottom: 16 }}
-        />
-        <Button>Enter</Button>
+        <LoginForm onSubmit={handleSubmit}>
+          <TextField
+            name="username"
+            label="Username"
+            placeholder="Enter your username"
+            error={errors.username}
+            containerStyle={{ marginBottom: 16 }}
+            value={username}
+            onChange={handleChange}
+          />
+          <TextField
+            type="password"
+            name="password"
+            label="Password"
+            placeholder="Enter your password"
+            error={errors.password}
+            containerStyle={{ marginBottom: 16 }}
+            value={password}
+            onChange={handleChange}
+          />
+          <Button type="submit" isLoading={isLogging}>
+            Enter
+          </Button>
+        </LoginForm>
       </LoginContainer>
     </LoginWrapper>
   )
@@ -85,6 +111,13 @@ const LoginContainer = styled.div`
       font-size: 18px;
     }
   }
+`
+
+const LoginForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 `
 
 export default Login
