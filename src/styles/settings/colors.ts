@@ -19,4 +19,5 @@ export const colors = {
     '500': '#0F2025',
     '600': '#040B0D',
   },
+  warning: '#EE0000',
 }
