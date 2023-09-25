@@ -1,15 +1,16 @@
 import { render, screen } from '@testing-library/react'
-
-import { TestProvider } from '@/__tests__'
+import { ThemeProvider } from 'styled-components'
 
 import Button from '.'
+
+import { theme } from '@/styles'
 
 describe('Button component', () => {
   it('should render', () => {
     render(
-      <TestProvider>
+      <ThemeProvider theme={theme}>
         <Button>Teste</Button>
-      </TestProvider>,
+      </ThemeProvider>,
     )
 
     expect(screen.getByTestId('button')).toBeInTheDocument()

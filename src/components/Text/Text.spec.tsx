@@ -1,14 +1,16 @@
 import { render, screen } from '@testing-library/react'
+import { ThemeProvider } from 'styled-components'
 
 import Text from '.'
-import { TestProvider } from '@/__tests__'
+
+import { theme } from '@/styles'
 
 describe('Text component', () => {
   it('should render', () => {
     render(
-      <TestProvider>
+      <ThemeProvider theme={theme}>
         <Text>Teste</Text>
-      </TestProvider>,
+      </ThemeProvider>,
     )
 
     expect(screen.getByTestId('text')).toBeInTheDocument()
