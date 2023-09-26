@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <HeaderWrapper data-testid="header">
       <Container>
-        <Logo variant="white" />
+        <Logo variant="white" width={80.25} height={25.5} />
       </Container>
     </HeaderWrapper>
   )
