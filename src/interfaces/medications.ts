@@ -20,3 +20,16 @@ export interface GetMedicationsResponse {
   total: number
   last_page: number
 }
+
+export type GetMedicationsParamsReducerActions =
+  | 'goToNextPage'
+  | 'goToLastPage'
+  | 'goToPreviousPage'
+  | 'goToFirstPage'
+  | 'changeSearch'
+
+export interface GetMedicationsParamsReducerActionProps {
+  type: GetMedicationsParamsReducerActions
+  lastPage?: number
+  search?: string
+}

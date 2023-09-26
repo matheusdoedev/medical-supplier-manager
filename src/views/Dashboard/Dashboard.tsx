@@ -1,57 +1,147 @@
-import { useMemo } from 'react'
+import { ChangeEvent, useEffect, useMemo, useReducer, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
 
-import { Button, Icon, Table } from '@/components'
-import { GetMedicationsResponse, IconProps } from '@/interfaces'
+import {
+  Button,
+  Icon,
+  MedicationsDataTableRows,
+  Table,
+  Text,
+  TextField,
+} from '@/components'
+import {
+  GET_MEDICATIONS_PARAMS_DEFAULT_VALUE,
+  MEDICATIONS_ROWS_STYLE,
+} from '@/constants'
+import { getMedicationsParamsReducer } from '@/hooks'
+import {
+  GetMedicationsParamsReducerActionProps,
+  GetMedicationsResponse,
+} from '@/interfaces'
 import { InternPageLayout } from '@/layouts'
 import { interviewService } from '@/services'
 
 import { theme } from '@/styles'
 
-const PAGINATION_BUTTON_COMMON_PROPERTIES: Omit<IconProps, 'name'> = {
-  fill: theme.colors.secondary['500'],
-  width: 24,
-  height: 24,
-}
-
-const PAGINATION_BUTTONS_LIST: IconProps[] = [
-  { name: 'doubleArrowLeft', ...PAGINATION_BUTTON_COMMON_PROPERTIES },
-  { name: 'arrowLeft', ...PAGINATION_BUTTON_COMMON_PROPERTIES },
-  { name: 'arrowRight', ...PAGINATION_BUTTON_COMMON_PROPERTIES },
-  { name: 'doubleArrowRight', ...PAGINATION_BUTTON_COMMON_PROPERTIES },
-]
-
 const Dashboard = () => {
-  const navigate = useNavigate()
-
-  const { data: getMedicationsData } = useQuery('getMedications', () =>
-    interviewService.getMedications(),
+  const [searchError, setSearchError] = useState<string | undefined>(undefined)
+  const [params, paramsDispatch] = useReducer(
+    getMedicationsParamsReducer,
+    GET_MEDICATIONS_PARAMS_DEFAULT_VALUE,
   )
 
-  const serializedMedicationsData: GetMedicationsResponse = useMemo(() => {
-    if (!getMedicationsData) return { data: [], last_page: 1, total: 0 }
+  const navigate = useNavigate()
 
-    return getMedicationsData.data
-  }, [getMedicationsData])
+  const { data: getMedicationsData, refetch } = useQuery('getMedications', () =>
+    interviewService.getMedications(params),
+  )
+
+  const { data: medicationsData, last_page }: GetMedicationsResponse =
+    useMemo(() => {
+      if (!getMedicationsData) return { data: [], last_page: 1, total: 0 }
+
+      return getMedicationsData.data
+    }, [getMedicationsData])
 
   const goToCreateMedicineView = () => {
     navigate('/create-medicine')
   }
 
-  const handlePaginationButtons = () =>
-    PAGINATION_BUTTONS_LIST.map(({ name, fill, width, height }) => (
-      <PaginationButton key={name}>
-        <Icon name={name} fill={fill} width={width} height={height} />
-      </PaginationButton>
-    ))
+  const handleChangePage =
+    (action: GetMedicationsParamsReducerActionProps) => () => {
+      paramsDispatch(action)
+    }
+
+  const handlePaginationBackwardButtons = () =>
+    params.page !== 1 && (
+      <>
+        <PaginationButton onClick={handleChangePage({ type: 'goToFirstPage' })}>
+          <Icon
+            name="doubleArrowLeft"
+            fill={theme.colors.secondary['500']}
+            width={24}
+            height={24}
+          />
+        </PaginationButton>
+        <PaginationButton
+          onClick={handleChangePage({ type: 'goToPreviousPage' })}
+        >
+          <Icon
+            name="arrowLeft"
+            fill={theme.colors.secondary['500']}
+            width={24}
+            height={24}
+          />
+        </PaginationButton>
+      </>
+    )
+
+  const handlePaginationForwardButtons = () =>
+    last_page !== 1 &&
+    params.page !== last_page && (
+      <>
+        <PaginationButton onClick={handleChangePage({ type: 'goToNextPage' })}>
+          <Icon
+            name="arrowRight"
+            fill={theme.colors.secondary['500']}
+            width={24}
+            height={24}
+          />
+        </PaginationButton>
+        <PaginationButton
+          onClick={handleChangePage({
+            type: 'goToLastPage',
+            lastPage: last_page,
+          })}
+        >
+          <Icon
+            name="doubleArrowRight"
+            fill={theme.colors.secondary['500']}
+            width={24}
+            height={24}
+          />
+        </PaginationButton>
+      </>
+    )
+
+  const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    paramsDispatch({ type: 'changeSearch', search: event.target.value })
+  }
+
+  useEffect(() => {
+    refetch()
+  }, [params.page, refetch])
+
+  useEffect(() => {
+    if (
+      params.search &&
+      params.search.length < 3 &&
+      params.search.length >= 1
+    ) {
+      setSearchError('Must have at least 3 characters.')
+    } else {
+      setSearchError(undefined)
+      paramsDispatch({ type: 'goToFirstPage' })
+      refetch()
+    }
+  }, [params.search, refetch])
 
   return (
     <InternPageLayout>
       <section data-testid="dashboard-view">
         <DashboardHead>
+          <TextField
+            name="search"
+            label="Search"
+            placeholder="Ex: Paredrine"
+            value={params.search ?? ''}
+            onChange={handleChangeSearch}
+            $error={searchError}
+          />
           <Button
+            type="button"
             containerStyle={{ maxWidth: '258px' }}
             onClick={goToCreateMedicineView}
           >
@@ -60,25 +150,46 @@ const Dashboard = () => {
           </Button>
         </DashboardHead>
 
-        <Table
-          heads={[
-            'App. Number',
-            'Active Ingredient',
-            'Drug Name',
-            'Form',
-            'Product Number',
-            'Reference Drug',
-            'Reference Standard',
-            'Strength',
-          ]}
-          data={serializedMedicationsData.data}
-          theadStyle={{
-            display: 'grid',
-            gridTemplateColumns: '1.5fr 2fr 3.5fr 1.5fr 1.5fr 3fr 4fr 1fr',
-          }}
-        />
+        {last_page !== 0 ? (
+          <>
+            <Table
+              heads={[
+                'App. Num.',
+                'Product Num.',
+                'Form',
+                'Strength',
+                'Ref. Drug',
+                'Drug Name',
+                'Active Ingredient',
+                'Ref. Standard',
+              ]}
+              theadStyle={MEDICATIONS_ROWS_STYLE}
+              tableStyle={{ width: '100%', minWidth: '1280px' }}
+            >
+              <MedicationsDataTableRows medicationsData={medicationsData} />
+            </Table>
+            <Text
+              containerStyle={{ marginTop: '8px' }}
+              variant="small"
+              color={theme.colors.quaternary['200']}
+            >
+              **Federal Register determination that product was not discontinued
+              or withdrawn for safety or efficacy reasons
+            </Text>
+          </>
+        ) : (
+          <Text containerStyle={{ textAlign: 'center', marginBottom: '24px' }}>
+            No results was found.
+          </Text>
+        )}
 
-        <PaginationButtons>{handlePaginationButtons()}</PaginationButtons>
+        {last_page !== 0 && (
+          <PaginationButtons>
+            {handlePaginationBackwardButtons()}
+            <PaginationButton>{params.page}</PaginationButton>
+            {handlePaginationForwardButtons()}
+          </PaginationButtons>
+        )}
       </section>
     </InternPageLayout>
   )
@@ -86,7 +197,8 @@ const Dashboard = () => {
 
 const DashboardHead = styled.section`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: flex-end;
   margin-bottom: 32px;
 `
 
@@ -108,6 +220,8 @@ const PaginationButton = styled.button`
   color: ${({ theme }) => theme.colors.secondary['500']};
   border: 1px solid ${({ theme }) => theme.colors.secondary['500']};
   border-radius: 4px;
+
+  font-size: 14px;
 `
 
 export default Dashboard

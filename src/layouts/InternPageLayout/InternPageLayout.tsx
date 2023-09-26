@@ -20,7 +20,8 @@ const InternPageLayout: FC<InternPageLayoutProps> = ({ children }) => {
 
 const Content = styled.section`
   background: ${({ theme }) => theme.colors.terciary['400']};
-  padding-top: 64px;
+  padding-top: 48px;
+  padding-bottom: 128px;
 `
 
 export default InternPageLayout

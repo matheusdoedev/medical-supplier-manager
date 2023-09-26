@@ -17,6 +17,7 @@ export interface TextComponentProps {
   children: ReactNode
   color?: string
   containerStyle?: CSSProperties
+  tooltip?: string
   className?: string
 }
 
