@@ -17,7 +17,7 @@ interface TextFieldProps {
   value: string | number
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
   containerStyle?: CSSProperties
-  error?: string
+  $error?: string
 }
 
 type InputOnFocusActions = 'on' | 'off'
@@ -29,7 +29,7 @@ const TextField: FC<TextFieldProps> = ({
   onChange,
   value,
   containerStyle,
-  error,
+  $error,
   ...props
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -39,7 +39,7 @@ const TextField: FC<TextFieldProps> = ({
     label && <TextFieldLabel htmlFor={name}>{label}</TextFieldLabel>
 
   const handleErrorText = () =>
-    error && <TextFieldError>{error}</TextFieldError>
+    $error && <TextFieldError>{$error}</TextFieldError>
 
   useEffect(() => {
     if (!inputRef.current || !inputWrapperRef.current) return
@@ -62,7 +62,7 @@ const TextField: FC<TextFieldProps> = ({
         {handleLabel()}
         {handleErrorText()}
       </TextFieldHead>
-      <TextFieldInputWrapper error={!!error} ref={inputWrapperRef}>
+      <TextFieldInputWrapper $error={!!$error} ref={inputWrapperRef}>
         <TextFieldInput
           type={type}
           id={name}
@@ -111,7 +111,7 @@ const TextFieldLabel = styled.label`
   }
 `
 
-const TextFieldInputWrapper = styled.div<{ error?: boolean }>`
+const TextFieldInputWrapper = styled.div<{ $error?: boolean }>`
   width: 100%;
   padding: 1px 1px;
   border-radius: 4px;
@@ -122,8 +122,8 @@ const TextFieldInputWrapper = styled.div<{ error?: boolean }>`
     border-color: ${({ theme }) => theme.colors.primary['400']};
   }
 
-  ${({ error }) =>
-    error &&
+  ${({ $error }) =>
+    $error &&
     css`
       border-color: ${({ theme }) => theme.colors.warning};
     `}
