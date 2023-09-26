@@ -7,11 +7,12 @@ import { TextComponentProps, TextProps } from '@/interfaces'
 import { theme } from '@/styles'
 
 const TextComponent: FC<TextComponentProps> = ({
-  as,
+  as = 'p',
   children,
   variant = 'default',
   color = theme.colors.quaternary['500'],
   containerStyle,
+  tooltip,
   className,
 }) => {
   const { fontSize } = TEXT_VARIANTS[variant]
@@ -24,6 +25,7 @@ const TextComponent: FC<TextComponentProps> = ({
       color={color}
       style={containerStyle}
       className={className}
+      title={tooltip}
     >
       {children}
     </Text>
