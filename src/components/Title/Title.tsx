@@ -34,6 +34,7 @@ const Title = styled.h2<TitleProps>`
   font-size: ${({ fontSize }) => fontSize + 'px'};
   line-height: 1.1em;
   font-family: ${({ theme }) => theme.fonts.primary};
+  text-transform: uppercase;
   color: ${({ color }) => color};
 `
 
