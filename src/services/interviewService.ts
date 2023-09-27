@@ -6,7 +6,9 @@ import {
   LoginDto,
   LoginResponse,
   GetMedicationsParams,
-  GetMedicationsResponse,
+  GetWithPagination,
+  Medication,
+  Manufacturer,
 } from '@/interfaces'
 import { getAuthToken } from '@/utils'
 
@@ -40,8 +42,16 @@ export const interviewService = {
 
     if (search) serializedParams.search = search
 
-    return interviewAPI.get<GetMedicationsResponse>('/medications', {
+    return interviewAPI.get<GetWithPagination<Medication>>('/medications', {
       params: serializedParams,
+      headers: {
+        Authorization: getAuthToken(),
+      },
+    })
+  },
+
+  getManufacturers() {
+    return interviewAPI.get<GetWithPagination<Manufacturer>>('/manufacturers', {
       headers: {
         Authorization: getAuthToken(),
       },

@@ -15,12 +15,6 @@ export interface Medication {
   strength: string
 }
 
-export interface GetMedicationsResponse {
-  data: Medication[]
-  total: number
-  last_page: number
-}
-
 export type GetMedicationsParamsReducerActions =
   | 'goToNextPage'
   | 'goToLastPage'

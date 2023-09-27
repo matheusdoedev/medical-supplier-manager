@@ -1,4 +1,6 @@
 export * from './auth'
 export * from './common'
+export * from './create-medicine'
 export * from './interview'
+export * from './manufacturer'
 export * from './medications'
