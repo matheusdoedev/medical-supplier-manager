@@ -33,7 +33,7 @@ const Loader: FC<LoaderProps> = ({
 }
 
 const LoaderWrapper = styled.div`
-  padding: 5.5px 0;
+  padding: 7px 0;
 `
 
 export default Loader
