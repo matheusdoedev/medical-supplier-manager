@@ -120,7 +120,7 @@ const CreateMedicine = () => {
 
   return (
     <InternPageLayout>
-      <section data-testid="create-medicine-view">
+      <CreateMedicineWrapper data-testid="create-medicine-view">
         <GoBackButton onClick={goBackToDashboard}>
           <Icon
             name="arrowLeft"
@@ -131,9 +131,7 @@ const CreateMedicine = () => {
           <Text>Voltar</Text>
         </GoBackButton>
 
-        <Title containerStyle={{ marginBottom: '24px' }}>
-          Create a new medicine
-        </Title>
+        <Title>Create a new medicine</Title>
 
         <CreateMedicineForm onSubmit={handleSubmit}>
           <TextField
@@ -187,22 +185,43 @@ const CreateMedicine = () => {
             Save
           </Button>
         </CreateMedicineForm>
-      </section>
+      </CreateMedicineWrapper>
     </InternPageLayout>
   )
 }
+
+const CreateMedicineWrapper = styled.section`
+  & h2 {
+    font-size: 18px;
+  }
+
+  @media (min-width: ${theme.breakpoints.sm}) {
+    & h2 {
+      font-size: 24px;
+    }
+  }
+`
 
 const GoBackButton = styled.button`
   display: flex;
   align-items: center;
   column-gap: 2px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+
+  @media (min-width: ${theme.breakpoints.sm}) {
+    margin-bottom: 32px;
+  }
 `
 
 const CreateMedicineForm = styled.form`
   display: flex;
   flex-direction: column;
   row-gap: 16px;
+  margin-top: 16px;
+
+  @media (min-width: ${theme.breakpoints.sm}) {
+    margin-top: 24px;
+  }
 `
 
 const DateRow = styled.div`

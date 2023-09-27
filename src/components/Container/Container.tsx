@@ -4,19 +4,15 @@ import { theme } from '@/styles'
 
 const Container = styled.section`
   width: 100%;
-  max-width: 328px;
+  padding: 0 10px;
   margin: 0 auto;
 
   @media (min-width: ${theme.breakpoints.sm}) {
-    max-width: 544px;
-  }
-
-  @media (min-width: ${theme.breakpoints.md}) {
-    max-width: 688px;
+    padding: 0 16px;
   }
 
   @media (min-width: ${theme.breakpoints.lg}) {
-    max-width: 920px;
+    padding: 0 24px;
   }
 
   @media (min-width: ${theme.breakpoints.xl}) {
