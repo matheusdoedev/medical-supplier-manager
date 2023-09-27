@@ -10,6 +10,7 @@ const RoutesProvider = () => {
       <AppProvider>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route element={<AuthorizedRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create-medicine" element={<CreateMedicine />} />
