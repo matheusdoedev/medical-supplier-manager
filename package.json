@@ -1,7 +1,7 @@
 {
-  "name": "vite-react-boilerplate",
-  "private": true,
-  "version": "0.0.0",
+  "name": "medical-supplier-manager",
+  "private": false,
+  "version": "v1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
