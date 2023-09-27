@@ -1,3 +1,3 @@
-import { colors, fonts, gaps, breakpoints } from '@/styles'
+import { colors, fonts, breakpoints } from '@/styles'
 
-export const theme = { colors, fonts, gaps, breakpoints }
+export const theme = { colors, fonts, breakpoints }

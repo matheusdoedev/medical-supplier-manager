@@ -54,4 +54,7 @@ export interface AutocompleteFieldProps {
   options: AutocompleteOption[]
   value: AutocompleteOption[]
   onChange: (value: AutocompleteOption[]) => void
+  label: string
+  placeholder: string
+  $error?: string
 }

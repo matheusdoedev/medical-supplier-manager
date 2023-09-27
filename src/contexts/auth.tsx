@@ -4,7 +4,10 @@ import { useMutation } from 'react-query'
 import { useFormik } from 'formik'
 import { ValidationError } from 'yup'
 
-import { AUTH_FORM_DEFAULT_VALUES } from '@/constants'
+import {
+  AUTH_FORM_DEFAULT_VALUES,
+  YUP_SCHEMA_VALIDATE_DEFAULT_OPTIONS,
+} from '@/constants'
 import { AuthContextProps, LoginDto } from '@/interfaces'
 import { interviewService } from '@/services'
 import { postLoginSchema, setAuthToken } from '@/utils'
@@ -30,9 +33,10 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     setIsLogging(true)
 
     try {
-      await postLoginSchema.validate(loginDto, {
-        abortEarly: true,
-      })
+      await postLoginSchema.validate(
+        loginDto,
+        YUP_SCHEMA_VALIDATE_DEFAULT_OPTIONS,
+      )
 
       const { data } = await mutateAsync(loginDto)
 

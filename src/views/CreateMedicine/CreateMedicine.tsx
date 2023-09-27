@@ -1,41 +1,94 @@
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useFormik } from 'formik'
 import { styled } from 'styled-components'
+import { ValidationError } from 'yup'
+import { toast } from 'react-toastify'
 
 import {
   AutocompleteField,
+  Button,
   Datepicker,
   Icon,
   Text,
   TextField,
   Title,
 } from '@/components'
-import { AutocompleteOption, CreateMedicineFormValue } from '@/interfaces'
+import { YUP_SCHEMA_VALIDATE_DEFAULT_OPTIONS } from '@/constants'
+import {
+  AutocompleteOption,
+  CreateMedicineDto,
+  CreateMedicineFormValue,
+} from '@/interfaces'
 import { InternPageLayout } from '@/layouts'
 import { interviewService } from '@/services'
+import { postCreateMedicationSchema } from '@/utils'
 
 import { theme } from '@/styles'
-import { useMemo } from 'react'
 
 const FORM_DEFAULT_VALUES: CreateMedicineFormValue = {
   drug_name: '',
   units_per_package: 0,
   issued_on: '2023-09-26T19:46:13.148Z',
-  expires_on: '2023-09-26T19:46:13.148Z',
+  expires_on: '2023-09-27T19:46:13.148Z',
   manufacturers: [],
 }
 
 type DateFields = 'expires_on' | 'issued_on'
 
 const CreateMedicine = () => {
+  const [isCreating, setIsCreating] = useState(false)
+
   const navigate = useNavigate()
 
-  const { values, handleChange, setValues, handleSubmit } = useFormik({
-    initialValues: FORM_DEFAULT_VALUES,
-    onSubmit: (createMedicineDto: CreateMedicineFormValue) =>
-      console.log(createMedicineDto),
-  })
+  const { mutateAsync } = useMutation((createMedicineDto: CreateMedicineDto) =>
+    interviewService.postMedications(createMedicineDto),
+  )
+
+  const handleCreateMedicationSubmit = async (
+    createMedicineFormValue: CreateMedicineFormValue,
+  ) => {
+    setIsCreating(true)
+
+    try {
+      await postCreateMedicationSchema.validate(
+        createMedicineFormValue,
+        YUP_SCHEMA_VALIDATE_DEFAULT_OPTIONS,
+      )
+
+      const createMedicationDto = {
+        ...createMedicineFormValue,
+        manufacturers: createMedicineFormValue.manufacturers.map(
+          (manufacturers) => manufacturers.value,
+        ),
+      }
+
+      await mutateAsync(createMedicationDto)
+      toast.success('Medication was successfully created.')
+      navigate('/dashboard')
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        handleFormError({ [error.path as string]: error.message })
+        return
+      }
+      toast.error(
+        'It was not possible to create the medication. Try again or contact support.',
+      )
+    } finally {
+      setIsCreating(false)
+    }
+  }
+
+  const { values, handleChange, setValues, handleSubmit, setErrors, errors } =
+    useFormik({
+      initialValues: FORM_DEFAULT_VALUES,
+      onSubmit: handleCreateMedicationSubmit,
+    })
+
+  function handleFormError(error: object) {
+    setErrors(error)
+  }
 
   const { drug_name, expires_on, issued_on, manufacturers, units_per_package } =
     values
@@ -67,7 +120,7 @@ const CreateMedicine = () => {
 
   return (
     <InternPageLayout>
-      <section>
+      <section data-testid="create-medicine-view">
         <GoBackButton onClick={goBackToDashboard}>
           <Icon
             name="arrowLeft"
@@ -88,6 +141,7 @@ const CreateMedicine = () => {
             label="Drug name*"
             placeholder="Ex: Paredrine"
             value={drug_name}
+            $error={errors.drug_name}
             onChange={handleChange}
           />
           <TextField
@@ -97,18 +151,21 @@ const CreateMedicine = () => {
             placeholder="Ex: 7"
             value={units_per_package}
             onChange={handleChange}
+            $error={errors.units_per_package}
           />
           <DateRow>
             <Datepicker
               label="Issued on*"
               selected={new Date(issued_on)}
               onChange={handleChangeDate('issued_on')}
+              $error={errors.issued_on}
               showTimeSelect
             />
             <Datepicker
               label="Expires on*"
               selected={new Date(expires_on)}
               onChange={handleChangeDate('expires_on')}
+              $error={errors.expires_on}
               excludeDateIntervals={[
                 {
                   start: new Date('0000-01-01T00:00:00.148Z'),
@@ -119,10 +176,16 @@ const CreateMedicine = () => {
             />
           </DateRow>
           <AutocompleteField
+            label="Manufactures"
+            placeholder="Select manufactures"
             options={serializedManufacturesOptions}
             value={manufacturers}
+            $error={errors.manufacturers as string}
             onChange={handleChangeManufacturers}
           />
+          <Button type="submit" isLoading={isCreating}>
+            Save
+          </Button>
         </CreateMedicineForm>
       </section>
     </InternPageLayout>

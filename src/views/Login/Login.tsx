@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { Navigate } from 'react-router-dom'
 import { styled } from 'styled-components'
 import { toast } from 'react-toastify'
 
@@ -5,9 +7,9 @@ import { LoginBgImg } from '@/assets'
 import { Button, Logo, Text, TextField } from '@/components'
 import { useAuth } from '@/contexts'
 import { useQueryParams } from '@/hooks'
+import { getAuthToken } from '@/utils'
 
 import { theme } from '@/styles'
-import { useEffect } from 'react'
 
 const Login = () => {
   const { values, handleChange, handleSubmit, isLogging, errors } = useAuth()
@@ -21,6 +23,11 @@ const Login = () => {
       toast.warning('Session expired. You must sign in to continue.')
     }
   }, [isSessionExpired])
+
+  const token = getAuthToken()
+  console.log(token)
+
+  if (token) return <Navigate to="/dashboard" replace={true} />
 
   return (
     <LoginWrapper data-testid="login-view">
@@ -41,7 +48,7 @@ const Login = () => {
             name="username"
             label="Username"
             placeholder="Enter your username"
-            error={errors.username}
+            $error={errors.username}
             containerStyle={{ marginBottom: 16 }}
             value={username}
             onChange={handleChange}
@@ -51,7 +58,7 @@ const Login = () => {
             name="password"
             label="Password"
             placeholder="Enter your password"
-            error={errors.password}
+            $error={errors.password}
             containerStyle={{ marginBottom: 16 }}
             value={password}
             onChange={handleChange}

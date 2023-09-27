@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 import { GET_MEDICATIONS_PARAMS_DEFAULT_VALUE } from '@/constants'
-
 import {
+  CreateMedicineDto,
   LoginDto,
   LoginResponse,
   GetMedicationsParams,
@@ -14,6 +14,16 @@ import { getAuthToken } from '@/utils'
 
 const interviewAPI = axios.create({
   baseURL: import.meta.env.VITE_INTERVIEW_API_URL,
+})
+
+interviewAPI.interceptors.request.use((config) => {
+  const authToken = getAuthToken()
+
+  if (!authToken) return config
+
+  config.headers.Authorization = authToken
+
+  return config
 })
 
 interviewAPI.interceptors.response.use(
@@ -44,17 +54,14 @@ export const interviewService = {
 
     return interviewAPI.get<GetWithPagination<Medication>>('/medications', {
       params: serializedParams,
-      headers: {
-        Authorization: getAuthToken(),
-      },
     })
   },
 
+  postMedications(createMedicationDto: CreateMedicineDto) {
+    return interviewAPI.post('/medications', createMedicationDto)
+  },
+
   getManufacturers() {
-    return interviewAPI.get<GetWithPagination<Manufacturer>>('/manufacturers', {
-      headers: {
-        Authorization: getAuthToken(),
-      },
-    })
+    return interviewAPI.get<GetWithPagination<Manufacturer>>('/manufacturers')
   },
 }
