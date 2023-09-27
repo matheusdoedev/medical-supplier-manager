@@ -9,7 +9,7 @@ describe('Table component', () => {
   it('should render', () => {
     render(
       <ThemeProvider theme={theme}>
-        <Table heads={['Teste']} data={[]} />
+        <Table heads={['Teste']}>Teste</Table>
       </ThemeProvider>,
     )
 

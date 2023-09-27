@@ -20,13 +20,7 @@ const TableComponent: FC<TableProps> = ({
 }) => {
   const tableHeads = () =>
     heads.map((head) => (
-      <Title
-        as="th"
-        key={head}
-        variant="extraSmall"
-        containerStyle={{ textAlign: 'left' }}
-        color={theme.colors.terciary['400']}
-      >
+      <Title as="th" key={head} color={theme.colors.terciary['400']}>
         {head}
       </Title>
     ))
@@ -49,9 +43,14 @@ const TableWrapper = styled.div`
 `
 
 const TableHeadRow = styled.tr`
-  padding: 16px;
+  padding: 12px;
   background-color: ${({ theme }) => theme.colors.secondary['400']};
   border-radius: 4px;
+
+  & th {
+    font-size: 14px;
+    text-align: left;
+  }
 `
 
 export default TableComponent

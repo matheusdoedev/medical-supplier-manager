@@ -115,6 +115,9 @@ const Dashboard = () => {
   const handleTableRender = () =>
     last_page !== 0 ? (
       <>
+        <Text variant="small" color={theme.colors.quaternary['200']}>
+          Scroll to right to see more data.
+        </Text>
         <Table
           heads={MEDICATIONS_TABLE_HEADS}
           theadStyle={MEDICATIONS_ROWS_STYLE}
@@ -180,11 +183,7 @@ const Dashboard = () => {
             onChange={handleChangeSearch}
             $error={searchError}
           />
-          <Button
-            type="button"
-            containerStyle={{ maxWidth: '258px' }}
-            onClick={goToCreateMedicineView}
-          >
+          <Button type="button" onClick={goToCreateMedicineView}>
             <Icon name="add" containerStyle={{ marginRight: '4px' }} />
             Create Medicine
           </Button>
@@ -210,9 +209,23 @@ const Dashboard = () => {
 
 const DashboardHead = styled.section`
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
+  gap: 16px;
   margin-bottom: 32px;
+
+  & button {
+    max-width: 100%;
+  }
+
+  @media (min-width: ${theme.breakpoints.sm}) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    & button {
+      max-width: 258px;
+    }
+  }
 `
 
 const PaginationButtons = styled.div`

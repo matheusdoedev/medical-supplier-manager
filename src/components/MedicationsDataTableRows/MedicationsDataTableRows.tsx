@@ -51,13 +51,13 @@ const MedicationsDataTableRows: FC<MedicationsDataTableRowsProps> = ({
           style={MEDICATIONS_ROWS_STYLE}
         >
           <Text as="td">{application_number}</Text>
-          <Text as="td">{product_number}</Text>
+          <Text as="td">{drug_name}</Text>
           <Text as="td">{handleDataLists(form)} </Text>
           <Text as="td" tooltip={strengthAdvise}>
             {handleDataLists(strengthText)}
           </Text>
           <Text as="td">{reference_drug}</Text>
-          <Text as="td">{drug_name}</Text>
+          <Text as="td">{product_number}</Text>
           <Text as="td">{handleDataLists(active_ingredient)}</Text>
           <Text as="td">{reference_standard}</Text>
         </TableRow>
