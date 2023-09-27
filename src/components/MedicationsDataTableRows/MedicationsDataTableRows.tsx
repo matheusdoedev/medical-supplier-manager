@@ -29,7 +29,9 @@ const MedicationsDataTableRows: FC<MedicationsDataTableRowsProps> = ({
         return [strengthParts[0] + '**', strengthParts[1]]
       }
 
-      const [strengthText, strengthAdvise] = strength.includes('**')
+      const isStrengthDataWithAdviseText = strength.includes('**')
+
+      const [strengthText, strengthAdvise] = isStrengthDataWithAdviseText
         ? handleStrengthsWithAdvise(strength.split('**'))
         : [strength, '']
 

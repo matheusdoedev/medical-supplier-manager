@@ -1,25 +1,18 @@
-import { vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ThemeProvider } from 'styled-components'
 
-import Header from '.'
+import Datepicker from '.'
 
 import { theme } from '@/styles'
 
-vi.mock('react-router-dom', () => {
-  return {
-    useNavigate: vi.fn(),
-  }
-})
-
-describe('Header component', () => {
+describe('Button component', () => {
   it('should render', () => {
     render(
       <ThemeProvider theme={theme}>
-        <Header />
+        <Datepicker label="Manufactures" onChange={(value) => value} />
       </ThemeProvider>,
     )
 
-    expect(screen.getByTestId('header')).toBeInTheDocument()
+    expect(screen.getByTestId('datepicker')).toBeInTheDocument()
   })
 })

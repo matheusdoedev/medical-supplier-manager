@@ -6,6 +6,7 @@ import { styled } from 'styled-components'
 import {
   Button,
   Icon,
+  Loader,
   MedicationsDataTableRows,
   Table,
   Text,
@@ -14,11 +15,13 @@ import {
 import {
   GET_MEDICATIONS_PARAMS_DEFAULT_VALUE,
   MEDICATIONS_ROWS_STYLE,
+  MEDICATIONS_TABLE_HEADS,
 } from '@/constants'
 import { getMedicationsParamsReducer } from '@/hooks'
 import {
   GetMedicationsParamsReducerActionProps,
-  GetMedicationsResponse,
+  GetWithPagination,
+  Medication,
 } from '@/interfaces'
 import { InternPageLayout } from '@/layouts'
 import { interviewService } from '@/services'
@@ -27,6 +30,7 @@ import { theme } from '@/styles'
 
 const Dashboard = () => {
   const [searchError, setSearchError] = useState<string | undefined>(undefined)
+
   const [params, paramsDispatch] = useReducer(
     getMedicationsParamsReducer,
     GET_MEDICATIONS_PARAMS_DEFAULT_VALUE,
@@ -34,11 +38,13 @@ const Dashboard = () => {
 
   const navigate = useNavigate()
 
-  const { data: getMedicationsData, refetch } = useQuery('getMedications', () =>
-    interviewService.getMedications(params),
-  )
+  const {
+    data: getMedicationsData,
+    isLoading: isFetchingMedications,
+    refetch,
+  } = useQuery('getMedications', () => interviewService.getMedications(params))
 
-  const { data: medicationsData, last_page }: GetMedicationsResponse =
+  const { data: medicationsData, last_page }: GetWithPagination<Medication> =
     useMemo(() => {
       if (!getMedicationsData) return { data: [], last_page: 1, total: 0 }
 
@@ -106,6 +112,40 @@ const Dashboard = () => {
       </>
     )
 
+  const handleTableRender = () =>
+    last_page !== 0 ? (
+      <>
+        <Table
+          heads={MEDICATIONS_TABLE_HEADS}
+          theadStyle={MEDICATIONS_ROWS_STYLE}
+          tableStyle={{ width: '100%', minWidth: '1280px' }}
+        >
+          <MedicationsDataTableRows medicationsData={medicationsData} />
+        </Table>
+        <Text
+          containerStyle={{ marginTop: '8px' }}
+          variant="small"
+          color={theme.colors.quaternary['200']}
+        >
+          **Federal Register determination that product was not discontinued or
+          withdrawn for safety or efficacy reasons
+        </Text>
+      </>
+    ) : (
+      <Text containerStyle={{ textAlign: 'center', marginBottom: '24px' }}>
+        No results was found.
+      </Text>
+    )
+
+  const handlePagination = () =>
+    last_page !== 0 && (
+      <PaginationButtons>
+        {handlePaginationBackwardButtons()}
+        <PaginationButton>{params.page}</PaginationButton>
+        {handlePaginationForwardButtons()}
+      </PaginationButtons>
+    )
+
   const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
     paramsDispatch({ type: 'changeSearch', search: event.target.value })
   }
@@ -150,45 +190,18 @@ const Dashboard = () => {
           </Button>
         </DashboardHead>
 
-        {last_page !== 0 ? (
-          <>
-            <Table
-              heads={[
-                'App. Num.',
-                'Product Num.',
-                'Form',
-                'Strength',
-                'Ref. Drug',
-                'Drug Name',
-                'Active Ingredient',
-                'Ref. Standard',
-              ]}
-              theadStyle={MEDICATIONS_ROWS_STYLE}
-              tableStyle={{ width: '100%', minWidth: '1280px' }}
-            >
-              <MedicationsDataTableRows medicationsData={medicationsData} />
-            </Table>
-            <Text
-              containerStyle={{ marginTop: '8px' }}
-              variant="small"
-              color={theme.colors.quaternary['200']}
-            >
-              **Federal Register determination that product was not discontinued
-              or withdrawn for safety or efficacy reasons
-            </Text>
-          </>
+        {isFetchingMedications ? (
+          <FetchingLoader>
+            <Loader
+              isLoading={isFetchingMedications}
+              color={theme.colors.secondary['500']}
+            />
+          </FetchingLoader>
         ) : (
-          <Text containerStyle={{ textAlign: 'center', marginBottom: '24px' }}>
-            No results was found.
-          </Text>
-        )}
-
-        {last_page !== 0 && (
-          <PaginationButtons>
-            {handlePaginationBackwardButtons()}
-            <PaginationButton>{params.page}</PaginationButton>
-            {handlePaginationForwardButtons()}
-          </PaginationButtons>
+          <>
+            {handleTableRender()}
+            {handlePagination()}
+          </>
         )}
       </section>
     </InternPageLayout>
@@ -222,6 +235,10 @@ const PaginationButton = styled.button`
   border-radius: 4px;
 
   font-size: 14px;
+`
+
+const FetchingLoader = styled.div`
+  padding-top: 48px;
 `
 
 export default Dashboard

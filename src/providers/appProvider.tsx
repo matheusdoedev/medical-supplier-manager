@@ -9,6 +9,7 @@ import { queryProvider } from '@/providers'
 import { Reset, theme } from '@/styles'
 
 import 'react-toastify/dist/ReactToastify.css'
+import 'react-datepicker/dist/react-datepicker.css'
 
 interface AppProviderProps {
   children: ReactNode

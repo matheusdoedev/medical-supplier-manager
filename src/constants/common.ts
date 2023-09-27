@@ -4,7 +4,9 @@ import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
   MdAdd,
+  MdLogout,
 } from 'react-icons/md'
+import { AnyObject, ValidateOptions } from 'yup'
 
 export const TEXT_VARIANTS = {
   small: { fontSize: 12 },
@@ -27,4 +29,11 @@ export const ICON_LIST = {
   arrowRight: MdKeyboardArrowRight,
   doubleArrowLeft: MdKeyboardDoubleArrowLeft,
   doubleArrowRight: MdKeyboardDoubleArrowRight,
+  logout: MdLogout,
+}
+
+export const YUP_SCHEMA_VALIDATE_DEFAULT_OPTIONS:
+  | ValidateOptions<AnyObject>
+  | undefined = {
+  abortEarly: true,
 }

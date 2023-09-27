@@ -38,3 +38,23 @@ export interface IconProps extends CommonComponent {
   width?: number
   height?: number
 }
+
+export interface GetWithPagination<T> {
+  data: T[]
+  total: number
+  last_page: number
+}
+
+export interface AutocompleteOption {
+  title: string
+  value: string
+}
+
+export interface AutocompleteFieldProps {
+  options: AutocompleteOption[]
+  value: AutocompleteOption[]
+  onChange: (value: AutocompleteOption[]) => void
+  label: string
+  placeholder: string
+  $error?: string
+}
