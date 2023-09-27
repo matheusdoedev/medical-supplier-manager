@@ -20,7 +20,7 @@ const DatepickerComponent: FC<DatepickerComponentProps> = ({
     $error && <DatepickerError>{$error}</DatepickerError>
 
   return (
-    <DatepickerWrapper>
+    <DatepickerWrapper data-testid="datepicker">
       <DatepickerHead>
         <DatepickerLabel>
           {handleLabel()}
