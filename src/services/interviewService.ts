@@ -13,7 +13,7 @@ import {
 import { getAuthToken } from '@/utils'
 
 const interviewAPI = axios.create({
-  baseURL: import.meta.env.VITE_INTERVIEW_API_URL,
+  baseURL: 'https://djbnrrib9e.execute-api.us-east-2.amazonaws.com/v1',
 })
 
 interviewAPI.interceptors.request.use((config) => {
