@@ -43,14 +43,14 @@ jobs:
       - name: Creating a private key
         run: |
           mkdir ~/.ssh
-          echo ${{ secrets.SSH_KEY }} > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 400 ~/.ssh/id_rsa
 
       - name: Acessing EC2 instance
         run: |
           sudo apt update
           sudo apt install ssh
-          ssh -i ~/.ssh/id_rsa ${{ secrets.AWS_EC2_USERNAME }}@${{ secrets.AWS_EC2_HOST }}
+          sudo ssh -i ~/.ssh/id_rsa ${{ secrets.AWS_EC2_USERNAME }}@${{ secrets.AWS_EC2_HOST }}
 
       - name: Pulling docker image
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}
