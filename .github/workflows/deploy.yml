@@ -48,5 +48,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            sudo docker pull ${{ env.CONTAINER_NAME }}:${{ env.CONTAINER_TAG }}
-            sudo docker run -d -p 80:80 ${{ env.CONTAINER_NAME }}:${{ env.CONTAINER_TAG }}
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}
+            sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}
