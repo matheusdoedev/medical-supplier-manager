@@ -13,7 +13,7 @@ describe('TextField component', () => {
           name="teste"
           label="Teste"
           value="Teste"
-          onChange={(event) => console.log(event)}
+          onChange={(event) => void event}
         />
       </ThemeProvider>,
     )
