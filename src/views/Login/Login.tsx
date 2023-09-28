@@ -25,7 +25,6 @@ const Login = () => {
   }, [isSessionExpired])
 
   const token = getAuthToken()
-  console.log(token)
 
   if (token) return <Navigate to="/dashboard" replace={true} />
 

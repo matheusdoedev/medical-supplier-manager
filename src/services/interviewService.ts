@@ -26,14 +26,9 @@ interviewAPI.interceptors.request.use((config) => {
   return config
 })
 
-interviewAPI.interceptors.response.use(
-  (config) => {
-    return config
-  },
-  (error) => {
-    console.log(error.response)
-  },
-)
+interviewAPI.interceptors.response.use((config) => {
+  return config
+})
 
 export const interviewService = {
   postLogin(loginDto: LoginDto) {
@@ -45,7 +40,6 @@ export const interviewService = {
     limit,
     search,
   }: GetMedicationsParams = GET_MEDICATIONS_PARAMS_DEFAULT_VALUE) {
-    console.log(import.meta.env)
     const serializedParams: GetMedicationsParams = {
       page,
       limit,
