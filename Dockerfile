@@ -9,5 +9,5 @@ RUN yarn
 
 RUN yarn build
 
-EXPOSE 4173
-CMD [ "npm", "run", "build" ]
+EXPOSE 80
+CMD [ "yarn", "preview" ]
