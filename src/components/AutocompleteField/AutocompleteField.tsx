@@ -37,7 +37,7 @@ const AutocompleteField: FC<AutocompleteFieldProps> = ({
           getOptionLabel={(option) => option.title}
           filterSelectedOptions
           isOptionEqualToValue={(option, value) => option.value === value.value}
-          onChange={(e, value) => handleChange(value)}
+          onChange={(_e, value) => handleChange(value)}
           value={value}
           renderInput={(params) => (
             <TextField {...params} placeholder={placeholder} />

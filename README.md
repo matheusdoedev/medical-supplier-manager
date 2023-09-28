@@ -38,7 +38,7 @@ yarn dev
 
 ## Running project in production mode with Docker & Docker Compose
 
-### 1. Configure .env.production file
+### 1. Configure .env file
 
 ```env
 VITE_INTERVIEW_API_URL=PUT_THE_URL_HERE
