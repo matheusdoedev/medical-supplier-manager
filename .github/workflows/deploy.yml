@@ -23,9 +23,10 @@ jobs:
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Configuring env file
+        run: echo "${{ secrets.VITE_INTERVIEW_API_URL }}" > .env
+
       - name: Build docker image
-        env:
-          VITE_INTERVIEW_API_URL: ${{ secrets.VITE_INTERVIEW_API_URL }}
         run: docker build -t ${{ env.CONTAINER_NAME }} .
 
       - name: Tag image
