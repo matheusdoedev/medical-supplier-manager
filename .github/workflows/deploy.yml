@@ -24,7 +24,10 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Configuring env file
-        run: echo "${{ secrets.VITE_INTERVIEW_API_URL }}" > .env
+        run: |
+          echo "${{ secrets.VITE_INTERVIEW_API_URL }}" > .env
+          ls -la
+          cat .env
 
       - name: Build docker image
         run: docker build -t ${{ env.CONTAINER_NAME }} .
@@ -55,4 +58,6 @@ jobs:
             sudo docker rm ${{ env.IMAGE_NAME }}
             sudo docker rmi ${{ env.IMAGE_NAME }}
             sudo docker pull ${{ env.IMAGE_NAME }}
-            sudo docker run -d -p 80:80 ${{ env.IMAGE_NAME }}
+            sudo docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:80 ${{ env.IMAGE_NAME }}
+            sudo docker exec -it -w /usr/src/app ${{ env.CONTAINER_NAME }} sh
+            echo "${{ secrets.VITE_INTERVIEW_API_URL }}" > .env
