@@ -13,7 +13,7 @@ import {
 import { getAuthToken } from '@/utils'
 
 const interviewAPI = axios.create({
-  baseURL: 'https://djbnrrib9e.execute-api.us-east-2.amazonaws.com/v1',
+  baseURL: import.meta.env.VITE_INTERVIEW_API_URL,
 })
 
 interviewAPI.interceptors.request.use((config) => {
@@ -45,6 +45,7 @@ export const interviewService = {
     limit,
     search,
   }: GetMedicationsParams = GET_MEDICATIONS_PARAMS_DEFAULT_VALUE) {
+    console.log(import.meta.env)
     const serializedParams: GetMedicationsParams = {
       page,
       limit,
