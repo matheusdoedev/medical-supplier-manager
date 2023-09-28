@@ -28,8 +28,11 @@ jobs:
           VITE_INTERVIEW_API_URL: ${{ secrets.VITE_INTERVIEW_API_URL }}
         run: docker build -t ${{ env.CONTAINER_NAME }} .
 
+      - name: Tag image
+        run: docker tag ${{ env.CONTAINER_NAME }} ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}:${{ env.CONTAINER_TAG }}
+
       - name: Publish image to docker hub
-        run: docker push ${{ env.CONTAINER_NAME }}:${{ env.CONTAINER_TAG }}
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}:${{ env.CONTAINER_TAG }}
 
   deploy:
     name: Deploy
