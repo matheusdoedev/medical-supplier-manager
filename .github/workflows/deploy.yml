@@ -40,13 +40,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH Deploy
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}
-            sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}
+      - name: Acessing EC2 instance
+        run: ssh -i ${{ secrets.SSH_KEY }} ${{ secrets.AWS_EC2_USERNAME }}@${{ secrets.AWS_EC2_HOST }}
+
+      - name: Pulling docker image
+        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}
+
+      - name: Running container
+        run: sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}
