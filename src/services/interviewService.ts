@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { HttpStatusCode } from 'axios'
 
 import { GET_MEDICATIONS_PARAMS_DEFAULT_VALUE } from '@/constants'
 import {
@@ -10,7 +10,7 @@ import {
   Medication,
   Manufacturer,
 } from '@/interfaces'
-import { getAuthToken } from '@/utils'
+import { cleanAuthToken, getAuthToken } from '@/utils'
 
 const interviewAPI = axios.create({
   baseURL: import.meta.env.VITE_INTERVIEW_API_URL,
@@ -26,9 +26,20 @@ interviewAPI.interceptors.request.use((config) => {
   return config
 })
 
-interviewAPI.interceptors.response.use((config) => {
-  return config
-})
+interviewAPI.interceptors.response.use(
+  (config) => {
+    return config
+  },
+  (error) => {
+    if (
+      error.response.data.message === 'Invalid token.' ||
+      error.response.status === HttpStatusCode.Unauthorized
+    ) {
+      cleanAuthToken()
+      location.replace('/?sessionExpired=true')
+    }
+  },
+)
 
 export const interviewService = {
   postLogin(loginDto: LoginDto) {
