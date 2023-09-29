@@ -31,7 +31,7 @@ const Dashboard = () => {
   } = useGetMedications()
 
   const handleTableRender = () =>
-    last_page !== 0 ? (
+    medicationsData.length !== 0 ? (
       <>
         <Text variant="small" color={theme.colors.quaternary['200']}>
           Scroll to right to see more data.

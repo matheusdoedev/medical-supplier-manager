@@ -31,6 +31,7 @@ const Pagination: FC<PaginationProps> = ({
         <PaginationButton
           data-testid="pagination-backwards-buttons"
           onClick={handleChangePage({ type: 'goToFirstPage' })}
+          aria-label="Go to first page"
         >
           <Icon
             name="doubleArrowLeft"
@@ -41,6 +42,7 @@ const Pagination: FC<PaginationProps> = ({
         </PaginationButton>
         <PaginationButton
           onClick={handleChangePage({ type: 'goToPreviousPage' })}
+          aria-label="Go back to previous page"
         >
           <Icon
             name="arrowLeft"
@@ -56,7 +58,10 @@ const Pagination: FC<PaginationProps> = ({
     last_page !== 1 &&
     params.page !== last_page && (
       <>
-        <PaginationButton onClick={handleChangePage({ type: 'goToNextPage' })}>
+        <PaginationButton
+          onClick={handleChangePage({ type: 'goToNextPage' })}
+          aria-label="Go to next page"
+        >
           <Icon
             name="arrowRight"
             fill={theme.colors.secondary['500']}
@@ -69,6 +74,7 @@ const Pagination: FC<PaginationProps> = ({
             type: 'goToLastPage',
             lastPage: last_page,
           })}
+          aria-label="Go to last page"
         >
           <Icon
             name="doubleArrowRight"
