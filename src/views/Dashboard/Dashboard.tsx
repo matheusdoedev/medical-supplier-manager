@@ -1,6 +1,3 @@
-import { ChangeEvent, useEffect, useMemo, useReducer, useState } from 'react'
-import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
 
 import {
@@ -13,45 +10,25 @@ import {
   Text,
   TextField,
 } from '@/components'
-import {
-  GET_MEDICATIONS_PARAMS_DEFAULT_VALUE,
-  MEDICATIONS_ROWS_STYLE,
-  MEDICATIONS_TABLE_HEADS,
-} from '@/constants'
-import { getMedicationsParamsReducer } from '@/hooks'
-import { GetWithPagination, Medication } from '@/interfaces'
+import { MEDICATIONS_ROWS_STYLE, MEDICATIONS_TABLE_HEADS } from '@/constants'
+import { useGetMedications } from '@/hooks'
 import { InternPageLayout } from '@/layouts'
-import { interviewService } from '@/services'
 
 import { theme } from '@/styles'
 
 const Dashboard = () => {
-  const [searchError, setSearchError] = useState<string | undefined>(undefined)
-  const [limitError, setLimitError] = useState<string | undefined>(undefined)
-
-  const [params, paramsDispatch] = useReducer(
-    getMedicationsParamsReducer,
-    GET_MEDICATIONS_PARAMS_DEFAULT_VALUE,
-  )
-
-  const navigate = useNavigate()
-
   const {
-    data: getMedicationsData,
-    isFetching: isFetchingMedications,
-    refetch,
-  } = useQuery('getMedications', () => interviewService.getMedications(params))
-
-  const { data: medicationsData, last_page }: GetWithPagination<Medication> =
-    useMemo(() => {
-      if (!getMedicationsData) return { data: [], last_page: 1, total: 0 }
-
-      return getMedicationsData.data
-    }, [getMedicationsData])
-
-  const goToCreateMedicineView = () => {
-    navigate('/create-medicine')
-  }
+    last_page,
+    medicationsData,
+    isFetchingMedications,
+    params,
+    paramsDispatch,
+    handleChangeLimit,
+    handleChangeSearch,
+    searchError,
+    limitError,
+    goToCreateMedicineView,
+  } = useGetMedications()
 
   const handleTableRender = () =>
     last_page !== 0 ? (
@@ -99,44 +76,6 @@ const Dashboard = () => {
         />
       </>
     )
-
-  const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    paramsDispatch({ type: 'changeSearch', search: event.target.value })
-  }
-
-  const handleChangeLimit = (event: ChangeEvent<HTMLInputElement>) => {
-    paramsDispatch({ type: 'changeLimit', limit: Number(event.target.value) })
-  }
-
-  useEffect(() => {
-    refetch()
-  }, [params.page, refetch])
-
-  useEffect(() => {
-    if (
-      params.search &&
-      params.search.length < 3 &&
-      params.search.length >= 1
-    ) {
-      setSearchError('Must have at least 3 characters.')
-    } else {
-      setSearchError(undefined)
-      paramsDispatch({ type: 'goToFirstPage' })
-      refetch()
-    }
-  }, [params.search, refetch])
-
-  useEffect(() => {
-    if (params.limit > 1000) {
-      setLimitError('Max: 1000')
-    } else if (params.limit <= 0) {
-      setLimitError('Min: 1')
-    } else {
-      setLimitError(undefined)
-      paramsDispatch({ type: 'goToFirstPage' })
-      refetch()
-    }
-  }, [params.limit, refetch])
 
   return (
     <InternPageLayout>
