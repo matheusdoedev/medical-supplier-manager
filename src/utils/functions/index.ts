@@ -1,3 +1,5 @@
 export * from './cleanAuthToken'
 export * from './getAuthToken'
+export * from './handleFormsSubmitError'
 export * from './setAuthToken'
+export * from './validateYupSchema'
