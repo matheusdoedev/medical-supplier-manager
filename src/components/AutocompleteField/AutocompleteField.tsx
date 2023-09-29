@@ -4,7 +4,7 @@ import { Autocomplete, Stack, TextField } from '@mui/material'
 
 import { AutocompleteFieldProps, AutocompleteOption } from '@/interfaces'
 
-import { theme } from '@/styles'
+import { InputError, InputHead, InputLabel, InputWrapper } from '@/styles'
 
 const AutocompleteField: FC<AutocompleteFieldProps> = ({
   options,
@@ -18,18 +18,16 @@ const AutocompleteField: FC<AutocompleteFieldProps> = ({
     onChange(value)
   }
 
-  const handleLabel = () =>
-    label && <AutocompleteLabel>{label}</AutocompleteLabel>
+  const handleLabel = () => label && <InputLabel>{label}</InputLabel>
 
-  const handleErrorText = () =>
-    $error && <AutocompleteError>{$error}</AutocompleteError>
+  const handleErrorText = () => $error && <InputError>{$error}</InputError>
 
   return (
-    <AutocompleteWrapper data-testid="autocomplete" $error={!!$error}>
-      <AutocompleteHead>
+    <AutocompleteWrapper data-testid="autocomplete">
+      <InputHead>
         {handleLabel()}
         {handleErrorText()}
-      </AutocompleteHead>
+      </InputHead>
       <Stack spacing={3} sx={{ width: 500 }}>
         <Autocomplete
           multiple
@@ -48,13 +46,7 @@ const AutocompleteField: FC<AutocompleteFieldProps> = ({
   )
 }
 
-const AutocompleteWrapper = styled.div<{ $error?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  max-width: 350px;
-  width: 100%;
-  row-gap: 8px;
-
+const AutocompleteWrapper = styled(InputWrapper)`
   && {
     .MuiStack-root {
       max-width: 350px;
@@ -93,32 +85,6 @@ const AutocompleteWrapper = styled.div<{ $error?: boolean }>`
       border: 1px solid ${({ theme }) => theme.colors.primary['400']};
     }
   }
-`
-
-const AutocompleteLabel = styled.label`
-  color: ${({ theme }) => theme.colors.quaternary['400']};
-  font-family: ${({ theme }) => theme.fonts.secondary};
-  font-size: 14px;
-  line-height: 1.1em;
-
-  @media (min-width: ${theme.breakpoints.sm}) {
-    font-size: 16px;
-  }
-`
-
-const AutocompleteHead = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
-  align-items: center;
-`
-
-const AutocompleteError = styled.span`
-  justify-self: end;
-  color: ${({ theme }) => theme.colors.warning};
-  font-family: ${({ theme }) => theme.fonts.secondary};
-  font-size: 10px;
-  line-height: 1.1em;
 `
 
 export default AutocompleteField
