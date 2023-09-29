@@ -36,13 +36,18 @@ const MedicationsDataTableRows: FC<MedicationsDataTableRowsProps> = ({
         : [strength, '']
 
       const handleDataLists = (dataString: string) => {
-        return (
-          <DataList>
-            {dataString.split(';').map((dataStringItem) => (
-              <li key={dataStringItem}>{dataStringItem}</li>
-            ))}
-          </DataList>
-        )
+        const handleDataList = () =>
+          dataString
+            .split(';')
+            .map((dataStringItem, index) => (
+              <li
+                key={`${dataStringItem}-${application_number}-${product_number}-${index}`}
+              >
+                {dataStringItem}
+              </li>
+            ))
+
+        return <DataList>{handleDataList()}</DataList>
       }
 
       return (
@@ -52,12 +57,12 @@ const MedicationsDataTableRows: FC<MedicationsDataTableRowsProps> = ({
         >
           <Text as="td">{application_number}</Text>
           <Text as="td">{drug_name}</Text>
+          <Text as="td">{product_number}</Text>
           <Text as="td">{handleDataLists(form)} </Text>
           <Text as="td" tooltip={strengthAdvise}>
             {handleDataLists(strengthText)}
           </Text>
           <Text as="td">{reference_drug}</Text>
-          <Text as="td">{product_number}</Text>
           <Text as="td">{handleDataLists(active_ingredient)}</Text>
           <Text as="td">{reference_standard}</Text>
         </TableRow>

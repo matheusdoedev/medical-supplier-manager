@@ -9,7 +9,7 @@ export const GET_MEDICATIONS_PARAMS_DEFAULT_VALUE: GetMedicationsParams = {
 
 export const MEDICATIONS_ROWS_STYLE: CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: '1.5fr 4fr 2fr 1.5fr 1.5fr 1.5fr 4fr 2fr',
+  gridTemplateColumns: '1.5fr 4fr 2fr 2.5fr 1.5fr 1.5fr 3fr 2fr',
   columnGap: 16,
 }
 

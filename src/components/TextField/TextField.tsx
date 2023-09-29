@@ -17,6 +17,7 @@ interface TextFieldProps {
   value: string | number
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
   containerStyle?: CSSProperties
+  max?: string
   $error?: string
 }
 
@@ -86,8 +87,8 @@ const TextFieldWrapper = styled.div`
 `
 
 const TextFieldHead = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: space-between;
   column-gap: 16px;
   align-items: center;
 `

@@ -30,6 +30,7 @@ import { theme } from '@/styles'
 
 const Dashboard = () => {
   const [searchError, setSearchError] = useState<string | undefined>(undefined)
+  const [limitError, setLimitError] = useState<string | undefined>(undefined)
 
   const [params, paramsDispatch] = useReducer(
     getMedicationsParamsReducer,
@@ -153,6 +154,10 @@ const Dashboard = () => {
     paramsDispatch({ type: 'changeSearch', search: event.target.value })
   }
 
+  const handleChangeLimit = (event: ChangeEvent<HTMLInputElement>) => {
+    paramsDispatch({ type: 'changeLimit', limit: Number(event.target.value) })
+  }
+
   useEffect(() => {
     refetch()
   }, [params.page, refetch])
@@ -171,18 +176,41 @@ const Dashboard = () => {
     }
   }, [params.search, refetch])
 
+  useEffect(() => {
+    if (params.limit > 1000) {
+      setLimitError('Max: 1000')
+    } else if (params.limit <= 0) {
+      setLimitError('Min: 1')
+    } else {
+      setLimitError(undefined)
+      paramsDispatch({ type: 'goToFirstPage' })
+      refetch()
+    }
+  }, [params.limit, refetch])
+
   return (
     <InternPageLayout>
       <section data-testid="dashboard-view">
         <DashboardHead>
-          <TextField
-            name="search"
-            label="Search"
-            placeholder="Ex: Paredrine"
-            value={params.search ?? ''}
-            onChange={handleChangeSearch}
-            $error={searchError}
-          />
+          <SearchFields>
+            <TextField
+              name="search"
+              label="Search"
+              placeholder="Ex: Paredrine"
+              value={params.search ?? ''}
+              onChange={handleChangeSearch}
+              $error={searchError}
+            />
+            <TextField
+              type="number"
+              name="limit"
+              label="Results per page"
+              placeholder="Ex: 10"
+              value={params.limit}
+              onChange={handleChangeLimit}
+              $error={limitError}
+            />
+          </SearchFields>
           <Button type="button" onClick={goToCreateMedicineView}>
             <Icon name="add" containerStyle={{ marginRight: '4px' }} />
             Create Medicine
@@ -217,7 +245,7 @@ const DashboardHead = styled.section`
     max-width: 100%;
   }
 
-  @media (min-width: ${theme.breakpoints.sm}) {
+  @media (min-width: ${theme.breakpoints.md}) {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
@@ -226,6 +254,11 @@ const DashboardHead = styled.section`
       max-width: 258px;
     }
   }
+`
+
+const SearchFields = styled.section`
+  display: flex;
+  column-gap: 16px;
 `
 
 const PaginationButtons = styled.div`
