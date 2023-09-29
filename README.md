@@ -108,6 +108,9 @@ yarn preview
 - [React Spinners](https://www.npmjs.com/package/react-spinners)
 - [React Icons](https://react-icons.github.io/react-icons/)
 - [Emotion](https://emotion.sh/docs/introduction)
+- [AWS EC2](https://aws.amazon.com/)
+- [CI/CD](https://www.redhat.com/pt-br/topics/devops/what-is-ci-cd)
+- [Github Actions](https://docs.github.com/en/actions)
 
 ## Contributing
 

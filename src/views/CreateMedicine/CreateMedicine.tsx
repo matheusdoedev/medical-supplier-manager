@@ -1,10 +1,4 @@
-import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useMutation, useQuery } from 'react-query'
-import { useFormik } from 'formik'
 import { styled } from 'styled-components'
-import { ValidationError } from 'yup'
-import { toast } from 'react-toastify'
 
 import {
   AutocompleteField,
@@ -15,108 +9,26 @@ import {
   TextField,
   Title,
 } from '@/components'
-import { YUP_SCHEMA_VALIDATE_DEFAULT_OPTIONS } from '@/constants'
-import {
-  AutocompleteOption,
-  CreateMedicineDto,
-  CreateMedicineFormValue,
-} from '@/interfaces'
+import { useCreateMedicine } from '@/hooks'
 import { InternPageLayout } from '@/layouts'
-import { interviewService } from '@/services'
-import { postCreateMedicationSchema } from '@/utils'
 
 import { theme } from '@/styles'
 
-const FORM_DEFAULT_VALUES: CreateMedicineFormValue = {
-  drug_name: '',
-  units_per_package: 0,
-  issued_on: '2023-09-26T19:46:13.148Z',
-  expires_on: '2023-09-27T19:46:13.148Z',
-  manufacturers: [],
-}
-
-type DateFields = 'expires_on' | 'issued_on'
-
 const CreateMedicine = () => {
-  const [isCreating, setIsCreating] = useState(false)
-
-  const navigate = useNavigate()
-
-  const { mutateAsync } = useMutation((createMedicineDto: CreateMedicineDto) =>
-    interviewService.postMedications(createMedicineDto),
-  )
-
-  const handleCreateMedicationSubmit = async (
-    createMedicineFormValue: CreateMedicineFormValue,
-  ) => {
-    setIsCreating(true)
-
-    try {
-      await postCreateMedicationSchema.validate(
-        createMedicineFormValue,
-        YUP_SCHEMA_VALIDATE_DEFAULT_OPTIONS,
-      )
-
-      const createMedicationDto = {
-        ...createMedicineFormValue,
-        manufacturers: createMedicineFormValue.manufacturers.map(
-          (manufacturers) => manufacturers.value,
-        ),
-      }
-
-      await mutateAsync(createMedicationDto)
-      toast.success('Medication was successfully created.')
-      navigate('/dashboard')
-    } catch (error) {
-      if (error instanceof ValidationError) {
-        handleFormError({ [error.path as string]: error.message })
-        return
-      }
-      toast.error(
-        'It was not possible to create the medication. Try again or contact support.',
-      )
-    } finally {
-      setIsCreating(false)
-    }
-  }
-
-  const { values, handleChange, setValues, handleSubmit, setErrors, errors } =
-    useFormik({
-      initialValues: FORM_DEFAULT_VALUES,
-      onSubmit: handleCreateMedicationSubmit,
-    })
-
-  function handleFormError(error: object) {
-    setErrors(error)
-  }
+  const {
+    goBackToDashboard,
+    handleChange,
+    handleChangeDate,
+    handleChangeManufacturers,
+    handleSubmit,
+    isCreating,
+    values,
+    errors,
+    serializedManufacturesOptions,
+  } = useCreateMedicine()
 
   const { drug_name, expires_on, issued_on, manufacturers, units_per_package } =
     values
-
-  const { data: getManufacturersData } = useQuery('getManufacturers', () =>
-    interviewService.getManufacturers(),
-  )
-
-  const serializedManufacturesOptions: AutocompleteOption[] = useMemo(() => {
-    if (!getManufacturersData) return []
-
-    return getManufacturersData.data.data.map(({ name }) => ({
-      title: name,
-      value: name,
-    }))
-  }, [getManufacturersData])
-
-  const goBackToDashboard = () => {
-    navigate('/dashboard')
-  }
-
-  const handleChangeDate = (dateField: DateFields) => (date: Date) => {
-    setValues({ ...values, [dateField]: date.toISOString() })
-  }
-
-  const handleChangeManufacturers = (value: AutocompleteOption[]) => {
-    setValues({ ...values, manufacturers: value })
-  }
 
   return (
     <InternPageLayout>

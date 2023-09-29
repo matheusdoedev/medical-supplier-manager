@@ -5,9 +5,15 @@ import {
   useEffect,
   HTMLInputTypeAttribute,
 } from 'react'
-import { CSSProperties, css, styled } from 'styled-components'
+import { CSSProperties, styled } from 'styled-components'
 
-import { theme } from '@/styles'
+import {
+  InputError,
+  InputHead,
+  InputLabel,
+  InputWrapper,
+  InputFieldWrapper,
+} from '@/styles'
 
 interface TextFieldProps {
   type?: HTMLInputTypeAttribute
@@ -17,6 +23,7 @@ interface TextFieldProps {
   value: string | number
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
   containerStyle?: CSSProperties
+  max?: string
   $error?: string
 }
 
@@ -36,10 +43,9 @@ const TextField: FC<TextFieldProps> = ({
   const inputWrapperRef = useRef<HTMLDivElement>(null)
 
   const handleLabel = () =>
-    label && <TextFieldLabel htmlFor={name}>{label}</TextFieldLabel>
+    label && <InputLabel htmlFor={name}>{label}</InputLabel>
 
-  const handleErrorText = () =>
-    $error && <TextFieldError>{$error}</TextFieldError>
+  const handleErrorText = () => $error && <InputError>{$error}</InputError>
 
   useEffect(() => {
     if (!inputRef.current || !inputWrapperRef.current) return
@@ -57,12 +63,12 @@ const TextField: FC<TextFieldProps> = ({
   }, [])
 
   return (
-    <TextFieldWrapper data-testid="text-field" style={containerStyle}>
-      <TextFieldHead>
+    <InputWrapper data-testid="text-field" style={containerStyle}>
+      <InputHead>
         {handleLabel()}
         {handleErrorText()}
-      </TextFieldHead>
-      <TextFieldInputWrapper $error={!!$error} ref={inputWrapperRef}>
+      </InputHead>
+      <InputFieldWrapper $error={!!$error} ref={inputWrapperRef}>
         <TextFieldInput
           type={type}
           id={name}
@@ -72,62 +78,10 @@ const TextField: FC<TextFieldProps> = ({
           ref={inputRef}
           {...props}
         />
-      </TextFieldInputWrapper>
-    </TextFieldWrapper>
+      </InputFieldWrapper>
+    </InputWrapper>
   )
 }
-
-const TextFieldWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  row-gap: 8px;
-  width: 100%;
-  max-width: 350px;
-`
-
-const TextFieldHead = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
-  align-items: center;
-`
-
-const TextFieldError = styled.span`
-  justify-self: end;
-  color: ${({ theme }) => theme.colors.warning};
-  font-family: ${({ theme }) => theme.fonts.secondary};
-  font-size: 10px;
-  line-height: 1.1em;
-`
-
-const TextFieldLabel = styled.label`
-  color: ${({ theme }) => theme.colors.quaternary['400']};
-  font-family: ${({ theme }) => theme.fonts.secondary};
-  font-size: 14px;
-  line-height: 1.1em;
-
-  @media (min-width: ${theme.breakpoints.sm}) {
-    font-size: 16px;
-  }
-`
-
-const TextFieldInputWrapper = styled.div<{ $error?: boolean }>`
-  width: 100%;
-  padding: 1px 1px;
-  border-radius: 4px;
-  border: 1px solid ${({ theme }) => theme.colors.terciary['600']};
-  background: ${({ theme }) => theme.colors.terciary['400']};
-
-  &.focus {
-    border-color: ${({ theme }) => theme.colors.primary['400']};
-  }
-
-  ${({ $error }) =>
-    $error &&
-    css`
-      border-color: ${({ theme }) => theme.colors.warning};
-    `}
-`
 
 const TextFieldInput = styled.input`
   width: 100%;

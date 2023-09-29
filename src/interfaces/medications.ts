@@ -21,9 +21,11 @@ export type GetMedicationsParamsReducerActions =
   | 'goToPreviousPage'
   | 'goToFirstPage'
   | 'changeSearch'
+  | 'changeLimit'
 
 export interface GetMedicationsParamsReducerActionProps {
   type: GetMedicationsParamsReducerActions
   lastPage?: number
   search?: string
+  limit?: number
 }

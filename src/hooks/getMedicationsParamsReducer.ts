@@ -10,6 +10,8 @@ export const getMedicationsParamsReducer = (
   switch (action.type) {
     case 'changeSearch':
       return { ...state, search: action.search }
+    case 'changeLimit':
+      return { ...state, limit: action.limit ?? 10 }
     case 'goToFirstPage':
       return { ...state, page: 1 }
     case 'goToPreviousPage':

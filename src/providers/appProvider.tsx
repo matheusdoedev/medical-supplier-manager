@@ -3,8 +3,7 @@ import { QueryClientProvider } from 'react-query'
 import { ThemeProvider } from 'styled-components'
 
 import { Toast } from '@/components'
-import { AuthProvider } from '@/contexts'
-import { queryProvider } from '@/providers'
+import { AuthProvider, queryProvider } from '@/providers'
 
 import { Reset, theme } from '@/styles'
 
