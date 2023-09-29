@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useFormik } from 'formik'
 
+import { CREATE_MEDICINE_ERROR_MESSAGE, FORM_DEFAULT_VALUES } from '@/constants'
 import {
   AutocompleteOption,
   CreateMedicineDto,
@@ -15,14 +16,6 @@ import {
   postCreateMedicationSchema,
   validateYupSchema,
 } from '@/utils'
-
-const FORM_DEFAULT_VALUES: CreateMedicineFormValue = {
-  drug_name: '',
-  units_per_package: 0,
-  issued_on: '2023-09-26T19:46:13.148Z',
-  expires_on: '2023-09-27T19:46:13.148Z',
-  manufacturers: [],
-}
 
 type DateFields = 'expires_on' | 'issued_on'
 
@@ -67,7 +60,7 @@ export const useCreateMedicine = () => {
       toast.success('Medication was successfully created.')
       navigate('/dashboard')
     } catch (error) {
-      handleFormsSubmitError(error, setErrors)
+      handleFormsSubmitError(error, setErrors, CREATE_MEDICINE_ERROR_MESSAGE)
     } finally {
       setIsCreating(false)
     }

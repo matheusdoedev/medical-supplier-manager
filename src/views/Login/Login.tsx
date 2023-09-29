@@ -5,8 +5,7 @@ import { toast } from 'react-toastify'
 
 import { LoginBgImg } from '@/assets'
 import { Button, Logo, Text, TextField } from '@/components'
-import { useAuth } from '@/contexts'
-import { useQueryParams } from '@/hooks'
+import { useAuth, useQueryParams } from '@/hooks'
 import { getAuthToken } from '@/utils'
 
 import { theme } from '@/styles'
