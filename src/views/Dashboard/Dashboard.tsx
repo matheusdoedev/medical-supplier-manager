@@ -8,6 +8,7 @@ import {
   Icon,
   Loader,
   MedicationsDataTableRows,
+  Pagination,
   Table,
   Text,
   TextField,
@@ -18,11 +19,7 @@ import {
   MEDICATIONS_TABLE_HEADS,
 } from '@/constants'
 import { getMedicationsParamsReducer } from '@/hooks'
-import {
-  GetMedicationsParamsReducerActionProps,
-  GetWithPagination,
-  Medication,
-} from '@/interfaces'
+import { GetWithPagination, Medication } from '@/interfaces'
 import { InternPageLayout } from '@/layouts'
 import { interviewService } from '@/services'
 
@@ -41,7 +38,7 @@ const Dashboard = () => {
 
   const {
     data: getMedicationsData,
-    isLoading: isFetchingMedications,
+    isFetching: isFetchingMedications,
     refetch,
   } = useQuery('getMedications', () => interviewService.getMedications(params))
 
@@ -55,63 +52,6 @@ const Dashboard = () => {
   const goToCreateMedicineView = () => {
     navigate('/create-medicine')
   }
-
-  const handleChangePage =
-    (action: GetMedicationsParamsReducerActionProps) => () => {
-      paramsDispatch(action)
-    }
-
-  const handlePaginationBackwardButtons = () =>
-    params.page !== 1 && (
-      <>
-        <PaginationButton onClick={handleChangePage({ type: 'goToFirstPage' })}>
-          <Icon
-            name="doubleArrowLeft"
-            fill={theme.colors.secondary['500']}
-            width={24}
-            height={24}
-          />
-        </PaginationButton>
-        <PaginationButton
-          onClick={handleChangePage({ type: 'goToPreviousPage' })}
-        >
-          <Icon
-            name="arrowLeft"
-            fill={theme.colors.secondary['500']}
-            width={24}
-            height={24}
-          />
-        </PaginationButton>
-      </>
-    )
-
-  const handlePaginationForwardButtons = () =>
-    last_page !== 1 &&
-    params.page !== last_page && (
-      <>
-        <PaginationButton onClick={handleChangePage({ type: 'goToNextPage' })}>
-          <Icon
-            name="arrowRight"
-            fill={theme.colors.secondary['500']}
-            width={24}
-            height={24}
-          />
-        </PaginationButton>
-        <PaginationButton
-          onClick={handleChangePage({
-            type: 'goToLastPage',
-            lastPage: last_page,
-          })}
-        >
-          <Icon
-            name="doubleArrowRight"
-            fill={theme.colors.secondary['500']}
-            width={24}
-            height={24}
-          />
-        </PaginationButton>
-      </>
-    )
 
   const handleTableRender = () =>
     last_page !== 0 ? (
@@ -141,13 +81,23 @@ const Dashboard = () => {
       </Text>
     )
 
-  const handlePagination = () =>
-    last_page !== 0 && (
-      <PaginationButtons>
-        {handlePaginationBackwardButtons()}
-        <PaginationButton>{params.page}</PaginationButton>
-        {handlePaginationForwardButtons()}
-      </PaginationButtons>
+  const handleMedicationsTableRender = () =>
+    isFetchingMedications ? (
+      <FetchingLoader>
+        <Loader
+          isLoading={isFetchingMedications}
+          color={theme.colors.secondary['500']}
+        />
+      </FetchingLoader>
+    ) : (
+      <>
+        {handleTableRender()}
+        <Pagination
+          params={params}
+          paramsDispatch={paramsDispatch}
+          last_page={last_page}
+        />
+      </>
     )
 
   const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
@@ -217,19 +167,7 @@ const Dashboard = () => {
           </Button>
         </DashboardHead>
 
-        {isFetchingMedications ? (
-          <FetchingLoader>
-            <Loader
-              isLoading={isFetchingMedications}
-              color={theme.colors.secondary['500']}
-            />
-          </FetchingLoader>
-        ) : (
-          <>
-            {handleTableRender()}
-            {handlePagination()}
-          </>
-        )}
+        {handleMedicationsTableRender()}
       </section>
     </InternPageLayout>
   )
@@ -259,28 +197,6 @@ const DashboardHead = styled.section`
 const SearchFields = styled.section`
   display: flex;
   column-gap: 16px;
-`
-
-const PaginationButtons = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  column-gap: 16px;
-  margin-top: 24px;
-`
-
-const PaginationButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: 40px;
-  height: 40px;
-  color: ${({ theme }) => theme.colors.secondary['500']};
-  border: 1px solid ${({ theme }) => theme.colors.secondary['500']};
-  border-radius: 4px;
-
-  font-size: 14px;
 `
 
 const FetchingLoader = styled.div`
