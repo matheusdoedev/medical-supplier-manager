@@ -35,24 +35,24 @@ jobs:
       - name: Publish image to docker hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}:${{ env.CONTAINER_TAG }}
 
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
+  # deploy:
+  #   name: Deploy
+  #   needs: build
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: SSH Deploy
-        uses: appleboy/ssh-action@master
-        env:
-          IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: 22
-          script: |
-            sudo docker stop ${{ env.CONTAINER_NAME }}
-            sudo docker rm ${{ env.CONTAINER_NAME }}
-            sudo docker rmi ${{ env.IMAGE_NAME }}
-            sudo docker pull ${{ env.IMAGE_NAME }}
-            sudo docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:80 ${{ env.IMAGE_NAME }}
+  #   steps:
+  #     - name: SSH Deploy
+  #       uses: appleboy/ssh-action@master
+  #       env:
+  #         IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/${{ env.CONTAINER_NAME }}
+  #       with:
+  #         host: ${{ secrets.HOST }}
+  #         username: ${{ secrets.USERNAME }}
+  #         key: ${{ secrets.KEY }}
+  #         port: 22
+  #         script: |
+  #           sudo docker stop ${{ env.CONTAINER_NAME }}
+  #           sudo docker rm ${{ env.CONTAINER_NAME }}
+  #           sudo docker rmi ${{ env.IMAGE_NAME }}
+  #           sudo docker pull ${{ env.IMAGE_NAME }}
+  #           sudo docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:80 ${{ env.IMAGE_NAME }}
